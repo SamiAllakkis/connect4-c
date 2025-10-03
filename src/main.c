@@ -32,7 +32,7 @@ int main(){
 		}
 
 		scanf("%d", &col);
-		while(getchar != '\n');	//clear leftover input
+		while(getchar() != '\n');	//clear leftover input
 		col--;	//0 indexed
 
 
@@ -44,7 +44,7 @@ int main(){
 
 
 		printBoard(board);
-		trun = 1-turn;	//switching turns
+		turn = 1-turn;	//switching turns
 
 	}
 
