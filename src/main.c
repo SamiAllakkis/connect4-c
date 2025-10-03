@@ -4,6 +4,8 @@
 int main(){
 	char board[ROWS][COLS];
 	char playerA, playerB;
+	int col, turn = 0;
+	int win = 0;
 
 	printf("Welcome to Connect Four!\n");
 
@@ -21,6 +23,30 @@ int main(){
 	//Creating an empty board
 	createBoard(board);
 	printBoard(board);
+
+	while(!win){
+		if(turn==0){
+			printf("Player A, choose a column (1-%d): ", COLS);
+		}else{
+			printf("Player B, choose a column (1-%d): ", COLS);
+		}
+
+		scanf("%d", &col);
+		while(getchar != '\n');	//clear leftover input
+		col--;	//0 indexed
+
+
+		if(turn==0){
+
+		}else{
+
+		}
+
+
+		printBoard(board);
+		trun = 1-turn;	//switching turns
+
+	}
 
 	return 0;
 }
