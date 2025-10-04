@@ -7,7 +7,7 @@ int main(){
 	char player[2];
 	int col, turn = 0;
 	int win = 0;
-
+        int moves=0;   // used for the draw
 	printf("Welcome to Connect Four!\n");
 
 	//Ask players for their desired symbols
