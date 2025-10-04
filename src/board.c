@@ -35,3 +35,50 @@ int dropChecker(char board[ROWS][COLS], int col, char player){
 	}
 	return 0;	//column is full
 }
+
+int boardFull(char board[ROWS][COLS]){
+	for (int i = 0; i < COLS; i++){
+		if (board[ROWS-1][i] == '.'){
+			return 0;
+		}
+	}
+	return 1;
+}
+
+int checkWin(char board[ROWS][COLS], char player){
+
+	//check if board is full
+	if (boardFull(board)){return -1;}
+
+	for (int row = 0; row < ROWS; row++){
+		for (int col = 0; col < COLS; col++){
+			if (board[row][col] != player){continue;}
+			
+			if (col + 3 < COLS){ //check win horizontally
+				if (board[row][col+1] == player && board[row][col+2] == player && board[row][col+3] == player){
+					return 1;
+				}
+			}
+
+			if (row + 3 < ROWS){ //check win vertically
+				if (board[row+1][col] == player && board[row+2][col] == player && board[row+3][col] == player){
+					return 1;
+				}
+			}
+
+			if (row + 3 < ROWS && col + 3 < COLS){ //check win along diagonal 1
+				if (board[row+1][col+1] == player && board[row+2][col+2] == player && board[row+3][col+3] == player){
+					return 1;
+				}
+			}
+
+			if (row + 3 < ROWS && col - 3 >= 0){ //check win along diagonal 2
+				if (board[row+1][col-1] == player && board[row+2][col-2] == player && board[row+3][col-3] == player){
+					return 1;
+				}
+				
+			}
+		}
+	}
+	return 0;
+}
