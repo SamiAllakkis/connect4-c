@@ -53,7 +53,7 @@ int main(){
         if(dropChecker(board, col, playerA)){
             moves++;
             printBoard(board);
-            if(checkWin(board, playerA)){
+            if(checkWin(board, col, playerA)){
                 printf("Player A (%c) wins!\n", playerA);
                 break;
             }
@@ -70,7 +70,7 @@ int main(){
         if(dropChecker(board, col, playerB)){
             moves++;
             printBoard(board);
-            if(checkWin(board, playerB)){
+            if(checkWin(board, col, playerB)){
                 printf("Player B (%c) wins!\n", playerB);
                 break;
             }

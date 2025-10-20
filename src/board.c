@@ -36,49 +36,81 @@ int dropChecker(char board[ROWS][COLS], int col, char player){
     return 0;   //column is full
 }
 
-int checkWin(char board[ROWS][COLS], char player) {
-    // Check horizontal
-    for(int i = 0; i < ROWS; i++) {
-        for(int j = 0; j < COLS - 3; j++) {
-            if(board[i][j] == player &&
-               board[i][j + 1] == player &&
-               board[i][j + 2] == player &&
-               board[i][j + 3] == player)
-                return 1;
+int checkWin(char board[ROWS][COLS], int col, char player) {
+    // Find the latest checker
+    int row;
+    for(int i = 0; i < ROWS; i++){
+        if(board[i][col]!='.'){
+            row = i;
+            break;
         }
+    }
+
+    // Check horizontal
+    for(int i = 0; i < COLS-3; i++) {
+        if(board[row][i] == player &&
+            board[row][i + 1] == player &&
+            board[row][i + 2] == player &&
+            board[row][i + 3] == player)
+            return 1;
     }
 
     // Check vertical
     for(int i = 0; i < ROWS - 3; i++) {
-        for(int j = 0; j < COLS; j++) {
-            if(board[i][j] == player &&
-               board[i + 1][j] == player &&
-               board[i + 2][j] == player &&
-               board[i + 3][j] == player)
-                return 1;
-        }
+        if(board[i][col] == player &&
+            board[i + 1][col] == player &&
+            board[i + 2][col] == player &&
+            board[i + 3][col] == player)
+            return 1;
+    }
+
+    // Setup for diagonal check
+    int max_diag = ROWS < COLS ? ROWS : COLS;
+    char arr[max_diag];
+    for(int i=0; i<max_diag; i++){
+        arr[i] = 0;
     }
 
     // Check diagonal (\)
-    for(int i = 0; i < ROWS - 3; i++) {
-        for(int j = 0; j < COLS - 3; j++) {
-            if(board[i][j] == player &&
-               board[i + 1][j + 1] == player &&
-               board[i + 2][j + 2] == player &&
-               board[i + 3][j + 3] == player)
-                return 1;
-        }
+    int i = row;
+    int j = col;
+
+    while(i>0 && j>0){
+        i--; j--;
+    }
+
+    int idx = 0;
+    while(i<ROWS && j<COLS){
+        arr[idx++] = board[i++][j++];
+    }
+
+    for(int i = 0; i < idx - 3; i++) {
+        if(arr[i] == player &&
+            arr[i+1] == player &&
+            arr[i+2] == player &&
+            arr[i+3] == player)
+            return 1;
     }
 
     // Check diagonal (/)
-    for(int i = 0; i < ROWS - 3; i++) {
-        for(int j = 3; j < COLS; j++) {
-            if(board[i][j] == player &&
-               board[i + 1][j - 1] == player &&
-               board[i + 2][j - 2] == player &&
-               board[i + 3][j - 3] == player)
-                return 1;
-        }
+    i = row;
+    j = col;
+
+    while(i>0 && j<COLS-1){
+        i--; j++;
+    }
+
+    idx = 0;
+    while(i<ROWS && j>=0){
+        arr[idx++] = board[i++][j--];
+    }
+
+    for(int i = 0; i < idx - 3; i++) {
+        if(arr[i] == player &&
+            arr[i+1] == player &&
+            arr[i+2] == player &&
+            arr[i+3] == player)
+            return 1;
     }
 
     return 0;
