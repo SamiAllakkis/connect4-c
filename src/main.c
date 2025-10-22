@@ -1,22 +1,38 @@
-#include <stdio.h>
 #include "../include/board.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 int main(){
+    srand(time(NULL));  // seed random once here
+
 	char board[ROWS][COLS];
 	char playerA, playerB;
 	int col, turn = 0;
 	int win = 0;
-        int moves=0;   // used for the draw
+    int moves=0;   // used for the draw
+    int opponent;   //used to know if its human or a bot (and which one)
 	printf("Welcome to Connect Four!\n");
+
+    //Ask players wether they want to play against a human or a bot
+    printf("Enter 0 if you want to play against a human, and 1 if you want to play agaisnt the easy bot!\n");
+    scanf(" %d", &opponent);
+    while(getchar() != '\n');   //clear leftover input
 
 	//Ask players for their desired symbols
 	printf("Player A:");
 	scanf(" %c", &playerA);
 	while(getchar() != '\n');	//clear leftover input
 
-	printf("Player B:");
-	scanf(" %c", &playerB);
-	while(getchar() != '\n');	//clear leftover input
+    //Setting playerB's name in case of a bot playing
+    if(opponent!=0){
+        printf("Player B:");
+        scanf(" %c", &playerB);
+        while(getchar() != '\n');   //clear leftover input
+    }
+    else{
+        playerB = 'B';
+    }
 
 	printf("\n");
 
@@ -30,22 +46,33 @@ int main(){
         printf("Player A (%c), choose a column (1-%d): ", playerA, COLS);
     }else{
         // Player B's turn
-        printf("Player B (%c), choose a column (1-%d): ", playerB, COLS);
+        if(opponent==0){
+            printf("Player B (%c), choose a column (1-%d): ", playerB, COLS);
+        }
+        else{
+            printf("BOT%d (%c), choose a column (1-%d):", opponent, playerB, COLS);
+        }
     }
 
     // Read the column
-    if(scanf("%d", &col) != 1){
-        printf("Invalid input. Please enter a number between 1 and %d.\n", COLS);
-        while(getchar() != '\n');  // clear buffer
-        continue;
-    }
-    while(getchar() != '\n');      // clear buffer
-    col--;  // convert to 0-based index
+    if(opponent==0){
+        if(scanf("%d", &col) != 1){
+            printf("Invalid input. Please enter a number between 1 and %d.\n", COLS);
+            while(getchar() != '\n');  // clear buffer
+            continue;
+        }
+        while(getchar() != '\n');      // clear buffer
+        col--;  // convert to 0-based index
 
-    // Validate column range
-    if(col < 0 || col >= COLS){
-        printf("Invalid column. Choose a column between 1 and %d.\n", COLS);
-        continue;
+        // Validate column range
+        if(col < 0 || col >= COLS){
+            printf("Invalid column. Choose a column between 1 and %d.\n", COLS);
+            continue;
+        }
+    }
+    else{
+        col = bot1(board);
+        printf("%d\n", col+1);
     }
 
     if(turn==0){

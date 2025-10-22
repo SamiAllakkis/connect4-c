@@ -1,5 +1,8 @@
-#include <stdio.h>
 #include "../include/board.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <unistd.h>
 
 void createBoard(char board[ROWS][COLS]){
     for(int i=0; i<ROWS; i++){
@@ -114,4 +117,22 @@ int checkWin(char board[ROWS][COLS], int col, char player) {
     }
 
     return 0;
+}
+
+int bot1(char board[ROWS][COLS]){
+    int col;
+    int midcol = COLS/2;
+
+    //50% chance of choosing the middle column if its not full
+    if(board[0][midcol]=='.' && rand()%2==0){
+        col = midcol;
+    }
+    else{
+        do{
+            col = rand()%COLS;
+        }while(board[0][col]!='.');
+    }
+
+    sleep(1);  // Bot thinking simulation delay
+    return col;
 }
