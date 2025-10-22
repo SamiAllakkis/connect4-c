@@ -6,17 +6,39 @@
 int main(){
     srand(time(NULL));  // seed random once here
 
-	char board[ROWS][COLS];
-	char playerA, playerB;
-	int col, turn = 0;
-	int win = 0;
+    char board[ROWS][COLS];
+    char playerA, playerB;
+    int col, turn = 0;
     int moves=0;   // used for the draw
-    int opponent;   //used to know if its human or a bot (and which one)
+    int opponent=-1;   //used to know if its human or a bot (and which one)
 	printf("Welcome to Connect Four!\n");
 
-    //Ask players wether they want to play against a human or a bot
-    printf("Enter 0 if you want to play against a human, and 1 if you want to play agaisnt the easy bot!\n");
-    scanf(" %d", &opponent);
+    //Ask players whether they want to play against a human or a bot
+    int valid_choices[] = {0, 1};
+    int found;
+
+    while (1) {
+      printf("Enter 0 to play against a human, or 1 to play against the easy bot: ");
+        if (scanf("%d", &opponent) != 1) {
+         printf("Invalid input. Please type 0 or 1.\n");
+          while (getchar() != '\n'); // clear invalid input
+          continue;
+    }
+    while (getchar() != '\n'); // clear newline
+
+    // check if input is in the list
+    found = 0;
+    for (int i = 0; i < 2; i++) {
+        if (opponent == valid_choices[i]) {
+            found = 1;
+            break;
+        }
+    }
+
+    if (found) break; // valid input, exit loop
+    printf("Invalid choice. Please enter 0 or 1.\n");
+}
+
     while(getchar() != '\n');   //clear leftover input
 
 	//Ask players for their desired symbols
@@ -24,14 +46,15 @@ int main(){
 	scanf(" %c", &playerA);
 	while(getchar() != '\n');	//clear leftover input
 
-    //Setting playerB's name in case of a bot playing
-    if(opponent!=0){
+    //Setting playerB's name in case of a human playing
+    if(opponent==0){
         printf("Player B:");
         scanf(" %c", &playerB);
         while(getchar() != '\n');   //clear leftover input
     }
     else{
         playerB = 'B';
+        if (playerA == 'B') playerB = 'O';  // Avoid duplicate symbol
     }
 
 	printf("\n");
@@ -39,41 +62,38 @@ int main(){
 	//Creating an empty board
 	createBoard(board);
 	printBoard(board);
+        // will exit on breaks
+	while(1){
+    
 
-	while(!win){
-    if(turn==0){
-        // Player A's turn
-        printf("Player A (%c), choose a column (1-%d): ", playerA, COLS);
-    }else{
-        // Player B's turn
-        if(opponent==0){
-            printf("Player B (%c), choose a column (1-%d): ", playerB, COLS);
-        }
-        else{
-            printf("BOT%d (%c), choose a column (1-%d):", opponent, playerB, COLS);
-        }
+    if (turn == 0) {
+    // Player A (always human)
+    printf("Player A (%c), choose a column (1-%d): ", playerA, COLS);
+    if (scanf("%d", &col) != 1) {
+        printf("Invalid input.\n");
+        while(getchar() != '\n');
+        continue;
     }
-
-    // Read the column
-    if(opponent==0){
-        if(scanf("%d", &col) != 1){
-            printf("Invalid input. Please enter a number between 1 and %d.\n", COLS);
-            while(getchar() != '\n');  // clear buffer
+    while(getchar() != '\n');
+    col--;
+} else {
+    // Player B
+    if (opponent == 0) {
+        printf("Player B (%c), choose a column (1-%d): ", playerB, COLS);
+        if (scanf("%d", &col) != 1) {
+            printf("Invalid input.\n");
+            while(getchar() != '\n');
             continue;
         }
-        while(getchar() != '\n');      // clear buffer
-        col--;  // convert to 0-based index
-
-        // Validate column range
-        if(col < 0 || col >= COLS){
-            printf("Invalid column. Choose a column between 1 and %d.\n", COLS);
-            continue;
-        }
-    }
-    else{
+        while(getchar() != '\n');
+        col--;
+    } else {
+        // Bot mode
         col = bot1(board);
-        printf("%d\n", col+1);
+        printf("column %d\n", col + 1);
     }
+}
+
 
     if(turn==0){
         // Player A drops checker
@@ -111,5 +131,5 @@ int main(){
         }
     }
 }
-
+return 0;
 }
