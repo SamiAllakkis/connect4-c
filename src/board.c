@@ -119,7 +119,25 @@ int checkWin(char board[ROWS][COLS], int col, char player) {
     return 0;
 }
 
+int similuateDrop(char board[ROWS][COLS], int col){
+    if(col < 0 || col>= COLS) return 0; //invalid col
+    if(board[0][col] != '.') return 0; //col is full
+
+    if(!dropChecker(board, col, 'B')) return 0;
+    int win = checkWin(board, col, 'B');
+
+    //undoing the move
+    for(int i=0; i<ROWS; i++){
+        if(board[i][col]!='.'){
+            board[i][col] = '.';
+            break;
+        }
+    }
+    return win;
+}
+
 int bot1(char board[ROWS][COLS]){
+    //usleep(500000);  // sleep for 0.5 seconds to simulate bot thinikng
     int col;
     int midcol = COLS/2;
 
@@ -133,6 +151,45 @@ int bot1(char board[ROWS][COLS]){
         }while(board[0][col]!='.');
     }
 
-    sleep(1);  // Bot thinking simulation delay
+    return col;
+}
+
+int bot2(char board[ROWS][COLS], int moves){
+    //usleep(500000);  // sleep for 0.5 seconds to simulate bot thinikng
+    int col;
+    int midcol = COLS/2;
+
+    //Early in game, playing center
+    if(moves<=4){
+        if(board[0][midcol]=='.') return midcol;
+        if(board[0][midcol+1]=='.') return midcol+1;
+        if(board[0][midcol-1]=='.') return midcol-1;
+    }
+
+    //Mid-Game Strategy
+    //Step 1: Win if possible
+    for(int c=0; c<COLS; c++){
+        if(similuateDrop(board, c)) return c;
+    }
+
+    //Step 2: Add randomness ot make the bot unpredictable
+    if(rand()%4 != 0){
+        //Step 3: Double-line strategy
+        for(int c=0; c<COLS; c++){
+            if(board[0][c]=='.'){
+                int row = ROWS-1;
+                while(row>=0 && board[row][c] != '.') row--;
+                if((c>0 && board[row][c-1]=='B') || (c< COLS-1 && board[row][c+1]=='B')) 
+                    return c;
+            }
+        }
+    }
+
+    //Step 3: Random answer
+    do{
+       col = rand()%COLS;
+    } while(board[0][col]!='.');
+
+
     return col;
 }

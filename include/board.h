@@ -8,6 +8,8 @@ void createBoard(char board[ROWS][COLS]);
 void printBoard(char board[ROWS][COLS]);
 int dropChecker(char board[ROWS][COLS], int col, char player);
 int checkWin(char board[ROWS][COLS], int col, char player);
+int similuateDrop(char board[ROWS][COLS], int col);
 int bot1(char board[ROWS][COLS]);
+int bot2(char board[ROWS][COLS], int moves);
 
 #endif
