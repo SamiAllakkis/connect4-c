@@ -15,13 +15,13 @@ int main(){
     printf("Welcome to Connect Four!\n");
 
     //Ask players whether they want to play against a human or a bot
-    int valid_choices[] = {0, 1, 2};
+    int valid_choices[] = {0, 1, 2, 3};
     int found;
 
     while (1) {
-        printf("Choose your opponent:\n  0 - Play against a human\n  1 - Play against the easy bot\n  2 - Play against the medium bot\nEnter your choice: ");
+        printf("Choose your opponent:\n  0 - Play against a human\n  1 - Play against the easy-level bot\n  2 - Play against the medium-level bot\n  3 - Play against the hard-level bot\nEnter your choice: ");
         if (scanf("%d", &opponent) != 1) {
-            printf("Invalid input. Please type 0, 1, or 2.\n");
+            printf("Invalid input. Please type 0, 1, 2, or 3.\n");
                 while (getchar() != '\n'); // clear invalid input
                 continue;
         }
@@ -30,7 +30,7 @@ int main(){
 
         // check if input is in the list
         found = 0;
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 4; i++) {
             if (opponent == valid_choices[i]) {
                 found = 1;
                 break;
@@ -38,7 +38,7 @@ int main(){
         }
 
         if (found) break; // valid input, exit loop
-        printf("Invalid choice. Please enter 0, 1, or 2.\n");
+        printf("Invalid choice. Please enter 0, 1, 2, or 3.\n");
     }
 
     //Ask players for their desired symbols
@@ -95,10 +95,15 @@ int main(){
                 col = bot1(board);
                 printf("Bot1 chose column %d\n", col + 1);
             }
-            else{
+            else if(opponent == 2){
                 // Bot2 mode
                 col = bot2(board, moves);
                 printf("Bot2 chose column %d\n", col + 1);
+            }
+            else{
+                // Bot2 mode
+                col = bot3(board, moves, playerA);
+                printf("Bot3 chose column %d\n", col + 1);
             }
         }
 
