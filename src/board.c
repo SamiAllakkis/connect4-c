@@ -119,7 +119,7 @@ int checkWin(char board[ROWS][COLS], int col, char player) {
     return 0;
 }
 
-int similuateDropWin(char board[ROWS][COLS], int col, char player){
+int simulateDropWin(char board[ROWS][COLS], int col, char player){
     if(col < 0 || col>= COLS) return 0; //invalid col
     if(board[0][col] != '.') return 0; //col is full
 
@@ -136,7 +136,7 @@ int similuateDropWin(char board[ROWS][COLS], int col, char player){
     return win;
 }
 
-int similuateDropDoubleLine(char board[ROWS][COLS], char player){
+int simulateDropDoubleLine(char board[ROWS][COLS], char player){
     for(int c=0; c<COLS; c++){
         if(board[0][c]!='.') continue;
 
@@ -144,7 +144,7 @@ int similuateDropDoubleLine(char board[ROWS][COLS], char player){
         int counter = 0;
 
         for(int k=0; k<COLS; k++){
-            if(similuateDropWin(board, k, player)){
+            if(simulateDropWin(board, k, player)){
                 counter++;
                 if(counter>=2){
                     //undoing the move
@@ -168,6 +168,38 @@ int similuateDropDoubleLine(char board[ROWS][COLS], char player){
         }
     }
     return -1;
+}
+
+int dropAllowsWin(char board[ROWS][COLS], int col, char player){
+    if(board[0][col]!='.') return 1;
+
+    int row;
+    for(row= ROWS-1; row>=0; row--){
+        if(board[row][col]=='.'){
+            board[row][col]='B';
+            break;
+        }
+    }
+
+    int unsafe = 0;
+
+    for(int c=0; c<COLS; c++){
+        if(board[0][c]=='.'){
+            for(int r = ROWS-1; r>=0; r--){
+                if(board[r][c]=='.'){
+                    board[r][c]=player;
+                    if(checkWin(board, c, player)) unsafe=1;
+                    board[r][c]='.';
+                    break;
+                }
+            }
+            if(unsafe)break;
+        }
+    }
+
+    //undo bot move
+    board[row][col]='.';
+    return unsafe;
 }
 
 int bot1(char board[ROWS][COLS]){
@@ -203,7 +235,7 @@ int bot2(char board[ROWS][COLS], int moves){
     //Mid-Game Strategy
     //Step 1: Win if possible
     for(int c=0; c<COLS; c++){
-        if(similuateDropWin(board, c, 'B')) return c;
+        if(simulateDropWin(board, c, 'B')) return c;
     }
 
     //Step 2: Add randomness ot make the bot unpredictable
@@ -234,32 +266,38 @@ int bot3(char board[ROWS][COLS], int moves, char player){
 
     //Step 1: Check if we can win with 1 move
     for(int c=0; c<COLS; c++){
-        if(similuateDropWin(board, c, 'B')) return c;
+        if(simulateDropWin(board, c, 'B')){
+            return c;
+        }
     }
 
     //Step 2: Check if opponent can win in 1 move to block
     for(int c=0; c<COLS; c++){
-        if(similuateDropWin(board, c, player)) return c;
+        if(simulateDropWin(board, c, player)){
+            return c; 
+        } 
     }
 
     //Step 3: Check for the possible creation of a double line from the opponent to block
-    int res = similuateDropDoubleLine(board, player);
-    if(res>=0){
+    int res = simulateDropDoubleLine(board, player);
+    if((res>=0) && !dropAllowsWin(board, res, player)){
         return res;
     }
 
     //Step 4: Check for the possible creation of a double line 
-    res = similuateDropDoubleLine(board, 'B');
-    if(res>=0){
+    res = simulateDropDoubleLine(board, 'B');
+    if((res>=0) && !dropAllowsWin(board, res, player)){
         return res;
     }
 
     //Step 5: playing center
-    if(board[0][midcol]=='.') return midcol;
-    if(board[0][midcol+1]=='.') return midcol+1;
-    if(board[0][midcol-1]=='.') return midcol-1;
-    if(board[0][midcol+2]=='.') return midcol+2;
-    if(board[0][midcol-2]=='.') return midcol-2;
+    int centerOptions[] = {midcol, midcol+1, midcol-1, midcol+2, midcol-2, midcol+3, midcol-3};
+    for(int i=0; i<7; i++){
+        int c = centerOptions[i];
+        if(c>=0 && c<COLS && board[0][c]=='.' && !dropAllowsWin(board, c, player)){
+            return c;
+        }
+    }
 
     //Edge case: Random answer
     do{
