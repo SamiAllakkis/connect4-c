@@ -15,7 +15,7 @@ gcc-15 -o server src/main.c src/board.c -Iinclude -fopenmp -DSERVER
 gcc-15 -o client src/main.c src/board.c -Iinclude -fopenmp -DCLIENT
 
 How to Run
-1.2. Local or Bot
+1. Local & Bot
 ./connect4
 
 3. Server
