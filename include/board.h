@@ -3,6 +3,7 @@
 
 #define ROWS 6
 #define COLS 7
+#define INF 1000000
 
 void createBoard(char board[ROWS][COLS]);
 void printBoard(char board[ROWS][COLS]);
