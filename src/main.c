@@ -98,6 +98,7 @@ int main() {
             printf("Player %c, choose a column (1-%d): ", currentPlayer, COLS);
             if (scanf("%d", &col) != 1) { while(getchar() != '\n'); continue; }
             while(getchar() != '\n');
+            col -= 1; // adjust for 0-based indexing
         }
 #elif defined(SERVER)
         if (turn == 0) {
@@ -105,6 +106,7 @@ int main() {
             printf("Player %c, choose a column (1-%d): ", currentPlayer, COLS);
             if (scanf("%d", &col) != 1) { while(getchar() != '\n'); continue; }
             while(getchar() != '\n');
+            col -= 1; // adjust for 0-based indexing
             send_int(sock, col);
         } else {
             // receive move from client
@@ -123,6 +125,7 @@ int main() {
             printf("Player %c, choose a column (1-%d): ", currentPlayer, COLS);
             if (scanf("%d", &col) != 1) { while(getchar() != '\n'); continue; }
             while(getchar() != '\n');
+            col -= 1; // adjust for 0-based indexing
             send_int(sock, col);
         }
 #else
@@ -130,6 +133,7 @@ int main() {
         printf("Player %c, choose a column (1-%d): ", currentPlayer, COLS);
         if (scanf("%d", &col) != 1) { while(getchar() != '\n'); continue; }
         while(getchar() != '\n');
+        col -= 1; // adjust for 0-based indexing
 #endif
 
         if (dropChecker(board, col, currentPlayer)) {
