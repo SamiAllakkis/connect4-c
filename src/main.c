@@ -72,10 +72,41 @@ int main() {
     printBoard(board);
 
 #ifdef BOT
-    int opponent = 1; // Bot mode
+    int opponent = -1;
+
+    int valid_choices[] = {1, 2, 3};
+    int found;
+
+    printf("Choose your bot difficulty:\n");
+    printf("  1 - Easy bot\n");
+    printf("  2 - Medium bot\n");
+    printf("  3 - Hard bot\n");
+
+    while (1) {
+        printf("Enter your choice: ");
+        if (scanf("%d", &opponent) != 1) {
+            printf("Invalid input. Please type 1, 2, or 3.\n");
+            while (getchar() != '\n');
+            continue;
+        }
+
+        while (getchar() != '\n');
+
+        found = 0;
+        for (int i = 0; i < 3; i++) {
+            if (opponent == valid_choices[i]) {
+                found = 1;
+                break;
+            }
+        }
+
+        if (found) break;
+        printf("Invalid choice. Please enter 1, 2, or 3.\n");
+    }
 #elif defined(SERVER) || defined(CLIENT)
     int sock;
 #endif
+
 
 #ifdef SERVER
     sock = start_server();
@@ -91,9 +122,17 @@ int main() {
 
 #ifdef BOT
         if (turn == 1) {
-            // Bot move
-            col = bot1(board);
-            printf("Bot chooses column %d\n", col + 1);
+            // Use selected bot difficulty
+            if (opponent == 1) {
+                col = bot1(board);
+                printf("Bot1 chose column %d\n", col + 1);
+            } else if (opponent == 2) {
+                col = bot2(board, moves);
+                printf("Bot2 chose column %d\n", col + 1);
+            } else {
+                col = bot3(board, moves, playerA);
+                printf("Bot3 chose column %d\n", col + 1);
+            }
         } else {
             printf("Player %c, choose a column (1-%d): ", currentPlayer, COLS);
             if (scanf("%d", &col) != 1) { while(getchar() != '\n'); continue; }
